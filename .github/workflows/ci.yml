@@ -1,0 +1,55 @@
+name: DevOps CI Pipeline
+
+# Пункт 1: Налаштовуємо тригери запуску
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Крок 1: Клонування репозиторію
+      - name: Отримання коду репозиторію
+        uses: actions/checkout@v4
+
+      # Крок 2: Налаштування середовища Python
+      - name: Налаштування Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Пункт 2 (кешування): Кешування pip-залежностей для прискорення запусків
+      - name: Кешування залежностей pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Крок 3: Встановлення залежностей проєкту
+      - name: Встановлення залежностей
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff pytest
+          pip install -r requirements.txt
+
+      # Пункт 3: Статичний аналіз коду (Лінтер Ruff)
+      # Виявлені помилки завершать пайплайн з помилкою (блокуючий крок)
+      - name: Статичний аналіз коду за допомогою Ruff
+        run: |
+          ruff check .
+
+      # Пункт 2 (Test): Запуск юніт-тестів за допомогою pytest
+      - name: Запуск тестів (pytest)
+        run: |
+          pytest
+
+      # Пункт 4: Локальна збірка Docker-образу в межах раннера (без публікації)
+      - name: Збірка Docker-образу
+        run: |
+          docker build -t cats-registry:latest .
