@@ -1,6 +1,7 @@
-from fastapi import FastAPI, Depends
+from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
-from . import models, database
+
+from . import database, models
 
 app = FastAPI(title="Реєстр бойових котів — DevOps Lab")
 
