@@ -1,0 +1,18 @@
+replicaCount: 2
+
+image:
+  repository: cats-registry
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 8000
+  nodePort: 30080
+
+config:
+  environment: "development"
+  title: "Реєстр бойових котів"
+
+ingress:
+  enabled: false

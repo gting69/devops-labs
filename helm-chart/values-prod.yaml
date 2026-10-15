@@ -1,0 +1,7 @@
+replicaCount: 3
+image:
+  tag: "1.1.0"
+config:
+  environment: "production"
+ingress:
+  enabled: false
