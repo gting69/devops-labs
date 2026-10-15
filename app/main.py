@@ -16,7 +16,7 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"повідомлення": "Слава Україні! Реєстр бойових котів працює успішно 🐾"}
+    return {"повідомлення": "Слава Україні! Реєстр бойових котів працює успішно 🐾 v1.1.0"}
 
 @app.get("/cats/")
 def get_cats(db: Session = Depends(get_db)):
